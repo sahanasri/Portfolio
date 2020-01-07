@@ -10,6 +10,18 @@ pipeline {
                 }
             }
         }
+        stage ('Test') {
+            steps {
+                echo "Entered Test Stage...."
+            }
+        }
+        stage ('Deploy') {
+            steps {
+                echo "Entered Deploy Stage...."
+            }
+        }
+    }
+}
 
     post 
     {
