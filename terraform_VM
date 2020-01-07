@@ -1,0 +1,93 @@
+resource "azurerm_virtual_network" "main" {
+  name                = "${var.vm_ps_launcher_hostname}-network"
+  address_space       = ["10.0.0.0/16"]
+  location            = "${var.location}"
+  resource_group_name = "${var.resource_group_name}"
+}
+
+resource "azurerm_subnet" "internal" {
+  name                 = "internal"
+  resource_group_name  = "${var.resource_group_name}"
+  virtual_network_name = "${azurerm_virtual_network.main.name}"
+  address_prefix       = "10.0.2.0/24"
+}
+
+resource "azurerm_public_ip" "ps_launcher_ip" {
+  name                         = "${var.vm_ps_launcher_hostname}-ip"
+  location                     = "${var.location}"
+  resource_group_name          = "${var.resource_group_name}"
+  allocation_method            = "Dynamic"
+  domain_name_label            = "${var.vm_ps_launcher_hostname}"
+}
+
+resource "azurerm_network_interface" "ps_launcher_nic" {
+  name                      = "${var.vm_ps_launcher_hostname}-nic"
+  location                  = "${var.location}"
+  resource_group_name       = "${var.resource_group_name}"
+
+  ip_configuration {
+    name                          = "${var.vm_ps_launcher_hostname}-ipconfig"
+    subnet_id                     = "${azurerm_subnet.internal.id}"
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = "${azurerm_public_ip.ps_launcher_ip.id}"
+  }
+}
+
+resource "azurerm_storage_account" "example" {
+  name                     = "sahanastorageaccount"
+  resource_group_name      = "${var.resource_group_name}"
+  location                 = "${var.location}"
+  account_tier             = "Standard"
+  account_replication_type = "GRS"
+
+  tags = {
+    environment = "staging"
+  }
+}
+
+resource "azurerm_storage_container" "example" {
+  name                  = "cogs"
+  resource_group_name   = "idw-dev-12345678"
+  storage_account_name  = "idwdevodbc3"
+
+}
+ 
+
+resource "azurerm_virtual_machine" "ps_launcher_vm" {
+  name                  = "${var.vm_ps_launcher_hostname}"
+  location              = "${var.location}"
+  resource_group_name   = "${var.resource_group_name}"
+  network_interface_ids = ["${azurerm_network_interface.ps_launcher_nic.id}"]
+  vm_size               = "${var.vm_ps_launcher_size}"
+
+  # Uncomment this line to delete the OS disk automatically when deleting the VM
+  delete_os_disk_on_termination = true
+
+  # Uncomment this line to delete the data disks automatically when deleting the VM
+  delete_data_disks_on_termination = true
+
+  storage_image_reference {
+    publisher = "MicrosoftWindowsDesktop"
+    offer     = "Windows-10"
+    sku       = "rs5-pro"
+    version   = "latest"
+  }
+
+  storage_os_disk {
+    name              = "${var.vm_ps_launcher_hostname}-os"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
+  }
+
+  os_profile {
+    computer_name  = "${var.vm_ps_launcher_hostname}"
+    admin_username = "ssrivats"
+    admin_password = "Sahana0#"
+  }
+
+  os_profile_windows_config {
+    timezone       = "Central Standard Time"
+    provision_vm_agent = "true"
+  }
+}
