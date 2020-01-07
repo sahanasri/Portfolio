@@ -1,0 +1,58 @@
+module "network_config" {
+  source                = "/Users/ssrivats/.git/qpr/terraform/network"
+  resource_group_name   = "${var.resource_group_name}"
+}
+
+module "random_name" {
+    source  = "git::https://github.optum.com/dma/terraform_common//modules/random_name"
+}
+
+###############################################
+# Create SQL Server for QPR SQL Data Warehouse
+###############################################
+module "sqldw_sql_server" {
+  source                            = "git::https://github.optum.com/dma/azure_sql"
+  sql_server_name                   = "qpr-${var.env}-sqlsvr-${module.random_name.result}"
+  resource_group_name               = "${var.resource_group_name}"
+  location                          = "${var.location}"
+  administrator_login               = "${var.sqldw_sql_server_admin_login}"
+  administrator_login_password      = "${var.sqldw_sql_server_admin_password}"
+  allow_azure_ip_access             = "true"
+  subnet_id                         = "${module.network_config.subnet_id}"
+  add_to_subnet                     = "true"
+}
+
+###############################################
+# Create QPR SQL Data Warehouse
+###############################################
+resource "azurerm_sql_database" "sqldw_dw" {
+  name                              = "qpr-${var.env}-sqldw-${module.random_name.result}"
+  resource_group_name               = "${var.resource_group_name}"
+  location                          = "${var.location}"
+  server_name                       = "${module.sqldw_sql_server.sql_server_name}"
+  edition                           = "DataWarehouse"
+  requested_service_objective_name  = "DW100c"
+
+ provisioner "file" {
+     connection {
+        type = "ssh"
+        host = "40.122.133.151"
+        user = "ssrivats"
+        password = "Sahana0#"
+        }
+        source = "/Users/ssrivats/script.sh"
+        destination = "C:\Packages\Plugins\Microsoft.CPlat.Core.RunCommandWindows\1.1.2\Downloads\script11.ps1"
+}
+
+
+ provisioner "remote-exec" {
+    connection {
+        host= "40.122.133.151"
+        type= "ssh"
+        user= "ssrivats"
+        password= "Sahana0#"
+}
+
+    inline = ["Invoke-AzVMRunCommand -ResourceGroupName 'qpr-dev-rg-y7wesedw' -VMName 'sahana' -CommandId 'RunPowerShellScript' -ScriptPath '/Users/ssrivats/script.sh'"]
+}
+}
