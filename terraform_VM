@@ -34,7 +34,7 @@ resource "azurerm_network_interface" "example_nic" {
 }
 
 resource "azurerm_storage_account" "example" {
-  name                     = "sahanastorageaccount"
+  name                     = "samplestorageaccount"
   resource_group_name      = "${var.resource_group_name}"
   location                 = "${var.location}"
   account_tier             = "Standard"
@@ -48,7 +48,7 @@ resource "azurerm_storage_account" "example" {
 resource "azurerm_storage_container" "example" {
   name                  = "cogs"
   resource_group_name   = "resourcegroup1"
-  storage_account_name  = "storage1"
+  storage_account_name  = "samplestorageaccount"
 
 }
  
