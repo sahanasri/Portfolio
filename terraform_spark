@@ -30,8 +30,8 @@ resource "azurerm_hdinsight_spark_cluster" "example" {
 
   gateway {
     enabled  = true
-    username = "sparktest"
-    password = "Stream123!"
+    username = "dummy"
+    password = "dummy1!"
   }
 
   storage_account {
@@ -43,21 +43,21 @@ resource "azurerm_hdinsight_spark_cluster" "example" {
   roles {
     head_node {
       vm_size  = "Standard_D13_V2"
-      username = "sparktest"
-      password = "Stream123!"
+      username = "dummy"
+      password = "dummy1!"
     }
 
     worker_node {
       vm_size                  = "Standard_D12_V2"
-      username                 = "sparktest"
-      password                 = "Stream123!"
+      username                 = "dummy"
+      password                 = "dummy1"
       target_instance_count    = 3
     }
 
     zookeeper_node {
       vm_size  = "Standard_A4_V2"
-      username = "kafkatest"
-      password = "Stream123!"
+      username = "sparktest"
+      password = "sparktest1!"
     }
   }
 }
