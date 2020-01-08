@@ -1,11 +1,11 @@
 #! /bin/ksh -e
 
 #path of the directory that has the log files
-path='/etl/data/prod/admin'
+path='/etl/data/test/sample'
 
 #path where the script is located
 path2='/etl/opt/get_tracking'
-email_list='sahana.srivatsan@optum.com'
+email_list='sahanasrivatsan@gmail.com'
 
 
 cd $path
