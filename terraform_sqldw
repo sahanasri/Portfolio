@@ -1,18 +1,18 @@
 module "network_config" {
-  source                = "/Users/ssrivats/.git/qpr/terraform/network"
+  source                = "(github URL)"
   resource_group_name   = "${var.resource_group_name}"
 }
 
 module "random_name" {
-    source  = "git::https://github.optum.com/dma/terraform_common//modules/random_name"
+    source  = "(github URL)"
 }
 
 ###############################################
 # Create SQL Server for QPR SQL Data Warehouse
 ###############################################
 module "sqldw_sql_server" {
-  source                            = "git::https://github.optum.com/dma/azure_sql"
-  sql_server_name                   = "qpr-${var.env}-sqlsvr-${module.random_name.result}"
+  source                            = "(github URL)"
+  sql_server_name                   = "abc-${var.env}-sqlsvr-${module.random_name.result}"
   resource_group_name               = "${var.resource_group_name}"
   location                          = "${var.location}"
   administrator_login               = "${var.sqldw_sql_server_admin_login}"
@@ -26,7 +26,7 @@ module "sqldw_sql_server" {
 # Create QPR SQL Data Warehouse
 ###############################################
 resource "azurerm_sql_database" "sqldw_dw" {
-  name                              = "qpr-${var.env}-sqldw-${module.random_name.result}"
+  name                              = "abc-${var.env}-sqldw-${module.random_name.result}"
   resource_group_name               = "${var.resource_group_name}"
   location                          = "${var.location}"
   server_name                       = "${module.sqldw_sql_server.sql_server_name}"
@@ -37,8 +37,8 @@ resource "azurerm_sql_database" "sqldw_dw" {
      connection {
         type = "ssh"
         host = "40.122.133.151"
-        user = "ssrivats"
-        password = "Sahana0#"
+        user = "dummy"
+        password = "dummy#"
         }
         source = "/Users/ssrivats/script.sh"
         destination = "C:\Packages\Plugins\Microsoft.CPlat.Core.RunCommandWindows\1.1.2\Downloads\script11.ps1"
@@ -49,10 +49,10 @@ resource "azurerm_sql_database" "sqldw_dw" {
     connection {
         host= "40.122.133.151"
         type= "ssh"
-        user= "ssrivats"
-        password= "Sahana0#"
+        user= "dummy"
+        password= "dummy#"
 }
 
-    inline = ["Invoke-AzVMRunCommand -ResourceGroupName 'qpr-dev-rg-y7wesedw' -VMName 'sahana' -CommandId 'RunPowerShellScript' -ScriptPath '/Users/ssrivats/script.sh'"]
+    inline = ["Invoke-AzVMRunCommand -ResourceGroupName 'resource1' -VMName 'sahana' -CommandId 'RunPowerShellScript' -ScriptPath '/Users/ssrivats/script.sh'"]
 }
 }
