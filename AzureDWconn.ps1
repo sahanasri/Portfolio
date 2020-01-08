@@ -19,7 +19,7 @@ $database = "************"
 
 # This line will get sql files in $sqlScriptDirectory and submit them to sqlcmd
 $conn=New-Object System.Data.SqlClient.SQLConnection
-$ConnectionString = "Server={0};Database={1};User ID=qpr_warehouse_usr;Password=codm-123*^#;Integrated Security=False;Connect Timeout={2}" -f $server,$database,$ConnectionTimeout,$UserName,$Password
+$ConnectionString = "Server={0};Database={1};User ID=dummy;Password=dummy1;Integrated Security=False;Connect Timeout={2}" -f $server,$database,$ConnectionTimeout,$UserName,$Password
 $conn.ConnectionString=$ConnectionString
 $conn.Open()
 
