@@ -1,7 +1,7 @@
 $resource_group = "resource1"
 $vm_name = "sahana"
-$local_dir = "/Users/ssrivats/Desktop/Azure/Automation/drop_schema"
-$storage_dir = "https://sahanastorageaccount.blob.core.windows.net/sqlpowershellautomation"
+$local_dir = "/Users/ssrivats/Desktop/Azure/schema"
+$storage_dir = "https://samplestorageaccount.blob.core.windows.net/test"
 $script1 = "blob.ps1"
 $script2 = "script_nondataset.ps1"
 
